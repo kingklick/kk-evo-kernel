@@ -1,1 +1,0 @@
-cmd_drivers/video/msm/hdmi/silicon-image/built-in.o :=  /home/erik/froyo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld -EL    -r -o drivers/video/msm/hdmi/silicon-image/built-in.o drivers/video/msm/hdmi/silicon-image/sil.o 
