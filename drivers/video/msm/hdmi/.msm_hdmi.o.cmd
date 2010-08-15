@@ -1,0 +1,1 @@
+cmd_drivers/video/msm/hdmi/msm_hdmi.o := /home/erik/froyo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld -EL    -r -o drivers/video/msm/hdmi/msm_hdmi.o drivers/video/msm/hdmi/transmitter.o drivers/video/msm/hdmi/hdmi_lcdc.o drivers/video/msm/hdmi/fb-hdmi.o drivers/video/msm/hdmi/edid.o 

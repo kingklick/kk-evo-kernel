@@ -1,0 +1,1 @@
+cmd_drivers/video/msm/gpu/kgsl/built-in.o :=  /home/erik/froyo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld -EL    -r -o drivers/video/msm/gpu/kgsl/built-in.o drivers/video/msm/gpu/kgsl/msm_kgsl.o 

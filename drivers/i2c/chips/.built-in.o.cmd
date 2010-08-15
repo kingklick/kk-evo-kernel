@@ -1,0 +1,1 @@
+cmd_drivers/i2c/chips/built-in.o :=  /home/erik/froyo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld -EL    -r -o drivers/i2c/chips/built-in.o drivers/i2c/chips/akm8973.o drivers/i2c/chips/a1026.o drivers/i2c/chips/tpa6130.o drivers/i2c/chips/tpa2018d1.o drivers/i2c/chips/adp1650_flashlight.o drivers/i2c/chips/tps65200.o 
