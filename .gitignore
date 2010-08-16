@@ -57,6 +57,13 @@ modules.builtin
 include/config
 include/linux/version.h
 include/generated
+arch/arm/boot/compressed/vmlinux
+include/asm
+include/asm-arm/
+include/linux/autoconf.h
+include/linux/bounds.h
+include/linux/compile.h
+include/linux/utsrelease.h
 
 # stgit generated dirs
 patches-*
