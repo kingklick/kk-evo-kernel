@@ -74,9 +74,9 @@ struct clkctl_acpu_speed {
 #define SRC_PLL1	3 /* 768 MHz */
 
 struct clkctl_acpu_speed acpu_freq_tbl[] = {
-	{  19200, CCTL(CLK_TCXO, 1),		SRC_RAW, 0, 0, 925, 14000}, // 925
-	{ 128000, CCTL(CLK_TCXO, 1),		SRC_AXI, 0, 0, 925, 14000 }, // 925
-	{ 245760, CCTL(CLK_MODEM_PLL, 1),	SRC_RAW, 0, 0, 925, 29000 }, // change vdd to 1000
+	{  19200, CCTL(CLK_TCXO, 1),		SRC_RAW, 0, 0, 900, 14000}, // 925
+	{ 128000, CCTL(CLK_TCXO, 1),		SRC_AXI, 0, 0, 900, 14000 }, // 925
+	{ 245760, CCTL(CLK_MODEM_PLL, 1),	SRC_RAW, 0, 0, 900, 29000 }, // change vdd to 1000
 	/* Work arround for acpu resume hung, GPLL is turn off by arm9 */
 	/*{ 256000, CCTL(CLK_GLOBAL_PLL, 3),	SRC_RAW, 0, 0, 950, 29000 },*/
 	{ 384000, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x0A, 0, 975, 58000 }, // 975
@@ -94,12 +94,16 @@ struct clkctl_acpu_speed acpu_freq_tbl[] = {
 	{ 844800, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x16, 0, 1225, 128000 },
 	{ 883200, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x17, 0, 1250, 128000 },
 	{ 921600, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x18, 0, 1275, 128000 }, // 1300
-	{ 960000, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x19, 0, 1275, 128000 }, // 1300
-	{ 998400, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x1A, 0, 1275, 128000 }, // 1300
+	{ 960000, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x19, 0, 1275, 128000 },
+	{ 998400, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x1A, 0, 1275, 128000 }, 
 	{ 1036800, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x1B, 0, 1300, 128000 },
 	{ 1075200, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x1C, 0, 1300, 128000 },
 	{ 1113600, CCTL(CLK_TCXO, 1),		SRC_SCPLL, 0x1D, 0, 1300, 128000 },
-	{ 0 },
+	{ 1152000, CCTL(CLK_TCXO, 1),           SRC_SCPLL, 0x1E, 0, 1300, 128000 },
+        { 1190400, CCTL(CLK_TCXO, 1),           SRC_SCPLL, 0x1F, 0, 1325, 128000 },
+        { 1228800, CCTL(CLK_TCXO, 1),           SRC_SCPLL, 0x20, 0, 1350, 128000 },
+        { 1267200, CCTL(CLK_TCXO, 1),           SRC_SCPLL, 0x21, 0, 1350, 128000 },
+        { 0 },
 };
 
 /* select the standby clock that is used when switching scpll
@@ -447,7 +451,7 @@ void __init acpu_freq_tbl_fixup(void)
 	}
 
 	/* Override the fixup because we're overclocking */
-	max_acpu_khz = 1152000;
+	max_acpu_khz = 1267200;
 	
 	/* pr_info("Max ACPU freq is %d KHz\n", max_acpu_khz); */
 
