@@ -29,18 +29,8 @@
  * It helps to keep variable names smaller, simpler
  */
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-#define DEF_FREQUENCY_UP_THRESHOLD		(80)
-#define DEF_FREQUENCY_DOWN_THRESHOLD		(20)
-=======
 #define DEF_FREQUENCY_UP_THRESHOLD		(60) // 80
 #define DEF_FREQUENCY_DOWN_THRESHOLD		(35)
->>>>>>> c935e91... More tweaks for the conservative governor, set sampling to 50000 and tweak thresholds
-=======
-#define DEF_FREQUENCY_UP_THRESHOLD		(65) // 80
-#define DEF_FREQUENCY_DOWN_THRESHOLD		(35)
->>>>>>> 9c831bb... Tweaks to the conservative governor to improve ramping up and down time
 
 /*
  * The polling frequency of this governor depends on the capability of
