@@ -624,15 +624,27 @@ wl_iw_set_power_mode(
 
 		dev_wlc_ioctl(dev, WLC_GET_PM, &pm, sizeof(pm));
 		dev_wlc_ioctl(dev, WLC_SET_PM, &pm_local, sizeof(pm_local));
-	}
-	else if (strnicmp((char *)&powermode_val, "0", strlen("0")) == 0) {
+
+		/* Disable packet filtering if necessary */
+		net_os_set_packet_filter(dev, 0);
+
+	} else if (strnicmp((char *)&powermode_val, "0", strlen("0")) == 0) {
 
 		WL_TRACE(("%s: DHCP session done\n", __FUNCTION__));
 
 		dev_wlc_ioctl(dev, WLC_SET_PM, &pm, sizeof(pm));
+<<<<<<< HEAD
 	}
 	else {
 		WL_TRACE(("Unkwown yet power setting, ignored\n"));
+=======
+
+		/* Enable packet filtering if was turned off */
+		net_os_set_packet_filter(dev, 1);
+
+	} else {
+		WL_ERROR(("Unkwown yet power setting, ignored\n"));
+>>>>>>> eba55e0... net: wireless: bcm4329: Turn OFF packet filtering during DHCP session
 	}
 
 	p += snprintf(p, MAX_WX_STRING, "OK");

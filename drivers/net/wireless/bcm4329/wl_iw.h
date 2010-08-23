@@ -166,6 +166,12 @@ extern int net_os_wake_lock(struct net_device *dev);
 extern int net_os_wake_unlock(struct net_device *dev);
 extern int net_os_wake_lock_timeout(struct net_device *dev);
 extern int net_os_wake_lock_timeout_enable(struct net_device *dev);
+<<<<<<< HEAD
+=======
+extern int net_os_set_suspend_disable(struct net_device *dev, int val);
+extern int net_os_set_suspend(struct net_device *dev, int val);
+extern int net_os_set_packet_filter(struct net_device *dev, int val);
+>>>>>>> eba55e0... net: wireless: bcm4329: Turn OFF packet filtering during DHCP session
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
 #define IWE_STREAM_ADD_EVENT(info, stream, ends, iwe, extra) \

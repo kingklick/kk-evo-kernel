@@ -1,1 +1,0 @@
-cmd_drivers/net/wimax/SQN/sequans_sdio.o := /home/erik/froyo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld -EL    -r -o drivers/net/wimax/SQN/sequans_sdio.o drivers/net/wimax/SQN/sdio.o drivers/net/wimax/SQN/sdio-driver.o drivers/net/wimax/SQN/sdio-fw.o drivers/net/wimax/SQN/sdio-pm.o drivers/net/wimax/SQN/thp.o 
