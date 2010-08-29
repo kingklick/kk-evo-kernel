@@ -699,7 +699,8 @@ void msm_pm_flush_console(void)
 		return;
 	}
 
-	mdelay(50);
+	//mdelay(50);
+	msleep(50);
 
 	local_irq_disable();
 	if (try_acquire_console_sem())
@@ -724,10 +725,12 @@ static void msm_pm_restart(char str)
 	wait_rmt_final_call_back(10);
 	printk(KERN_INFO "back %s\r\n", __func__);
 	/* wait 2 seconds to let radio reset device after the final EFS sync*/
-	mdelay(2000);
+	//mdelay(2000);
+	msleep(2000);
 #else
 	/* In case Radio is dead, reset device after notify Radio 5 seconds */
-	mdelay(5000);
+	//mdelay(5000);
+	msleep(5000);
 #endif
 
 	/* hard reboot if possible */

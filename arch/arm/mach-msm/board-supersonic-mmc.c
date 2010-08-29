@@ -100,7 +100,8 @@ static uint32_t supersonic_sdslot_switchvdd(struct device *dev, unsigned int vdd
 		ret = vreg_enable(sdslot_vreg);
 		if (ret)
 			pr_err("%s: Error enabling vreg (%d)\n", __func__, ret);
-		udelay(500);
+		//udelay(500);
+		usleep(500);
 		config_gpio_table(sdcard_on_gpio_table,
 				  ARRAY_SIZE(sdcard_on_gpio_table));
 		sdslot_vreg_enabled = 1;
@@ -230,7 +231,8 @@ int supersonic_wifi_power(int on)
 	if (on) {
 		config_gpio_table(wifi_on_gpio_table,
 				  ARRAY_SIZE(wifi_on_gpio_table));
-		mdelay(50);
+		//mdelay(50);
+		msleep(50);
 		if (rc)
 			return rc;
 	} else {
@@ -238,9 +240,11 @@ int supersonic_wifi_power(int on)
 				  ARRAY_SIZE(wifi_off_gpio_table));
 	}
 
-	mdelay(100);
+	//mdelay(100);
+	msleep(100);
 	gpio_set_value(SUPERSONIC_GPIO_WIFI_SHUTDOWN_N, on); /* WIFI_SHUTDOWN */
-	mdelay(100);
+	//mdelay(100);
+	msleep(100);
 	return 0;
 }
 EXPORT_SYMBOL(supersonic_wifi_power);
@@ -371,6 +375,7 @@ int mmc_wimax_power(int on)
  		mdelay(5);
 		gpio_set_value(106, 1);
  		mdelay(1150);
+		//msleep(1150);
 
 		config_gpio_table(wimax_on_gpio_table,
 				  ARRAY_SIZE(wimax_on_gpio_table));
