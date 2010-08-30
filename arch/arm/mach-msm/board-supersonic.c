@@ -773,8 +773,13 @@ static struct regulator_init_data tps65023_data[5] = {
 	{
 		.constraints = {
 			.name = "dcdc1", /* VREG_MSMC2_1V29 */
+<<<<<<< HEAD
 			.min_uV = 850000,
 			.max_uV = 1350000,
+=======
+			.min_uV = 900000,	// Min voltage to 900 for undervolting
+			.max_uV = 1350000,	// Max voltage to 1350 for overclocking nuts
+>>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 			.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE,
 		},
 		.consumer_supplies = tps65023_dcdc1_supplies,
@@ -1368,6 +1373,7 @@ static void __init msm_device_i2c_init(void)
 	msm_device_i2c.dev.platform_data = &msm_i2c_pdata;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_QSD_SVS
 #define TPS65023_MAX_DCDC1	1300
 #else
@@ -1395,6 +1401,8 @@ static int qsd8x50_tps65023_set_dcdc1(int mVolts)
 	return rc;
 }
 
+=======
+>>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 static struct msm_acpu_clock_platform_data supersonic_clock_data = {
 	.acpu_switch_time_us	= 20,
 	.max_speed_delta_khz	= 256000,
@@ -1402,8 +1410,11 @@ static struct msm_acpu_clock_platform_data supersonic_clock_data = {
 	.power_collapse_khz	= 245000,
 	.wait_for_irq_khz	= 245000,
         .mpll_khz		= 245000,
+<<<<<<< HEAD
 	.max_vdd 		= TPS65023_MAX_DCDC1,
 	.acpu_set_vdd 		= qsd8x50_tps65023_set_dcdc1
+=======
+>>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 };
 
 static unsigned supersonic_perf_acpu_table[] = {
