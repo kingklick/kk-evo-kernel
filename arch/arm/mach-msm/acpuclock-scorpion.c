@@ -412,23 +412,11 @@ int acpuclk_set_rate(unsigned long rate, enum setrate_reason reason)
 	if (reason == SETRATE_CPUFREQ) {
 
 #ifdef CONFIG_MSM_CPU_AVS
-<<<<<<< HEAD
-		/* Notify avs before changing frequency */
-		rc = avs_adjust_freq(freq_index, 1);
-		if (rc) {
-			printk(KERN_ERR
-				"acpuclock: Unable to increase ACPU "
-				"vdd.\n");
-			mutex_unlock(&drv_state.lock);
-			return rc;
-		}
-=======
     /* notify avs after changing frequency */
     rc = avs_adjust_freq(freq_index, 0);
     if (rc)
       printk(KERN_ERR
         "acpuclock: Unable to drop ACPU vdd.\n");
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 #endif
                 /* Drop VDD level if we can. */
 		if (next->vdd < cur->vdd) {
