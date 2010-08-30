@@ -776,10 +776,6 @@ static struct regulator_init_data tps65023_data[5] = {
 <<<<<<< HEAD
 			.min_uV = 850000,
 			.max_uV = 1350000,
-=======
-			.min_uV = 900000,	// Min voltage to 900 for undervolting
-			.max_uV = 1350000,	// Max voltage to 1350 for overclocking nuts
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 			.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE,
 		},
 		.consumer_supplies = tps65023_dcdc1_supplies,
@@ -1373,36 +1369,6 @@ static void __init msm_device_i2c_init(void)
 	msm_device_i2c.dev.platform_data = &msm_i2c_pdata;
 }
 
-<<<<<<< HEAD
-#ifdef CONFIG_QSD_SVS
-#define TPS65023_MAX_DCDC1	1300
-#else
-#define TPS65023_MAX_DCDC1	CONFIG_QSD_PMIC_DEFAULT_DCDC1
-#endif
-
-static int qsd8x50_tps65023_set_dcdc1(int mVolts)
-{
-        int rc = 0;
-#ifdef CONFIG_QSD_SVS
-	rc = tps65023_set_dcdc1_level(mVolts);
-	/* By default the TPS65023 will be initialized to 1.225V.
-	 * So we can safely switch to any frequency within this
-	 * voltage even if the device is not probed/ready.
-	 */
-	if (rc == -ENODEV && mVolts <= CONFIG_QSD_PMIC_DEFAULT_DCDC1)
-		rc = 0;
-#else
-	/* Disallow frequencies not supported in the default PMIC
-	 * output voltage.
-	 */
-	if (mVolts > CONFIG_QSD_PMIC_DEFAULT_DCDC1)
-		rc = -EFAULT;
-#endif
-	return rc;
-}
-
-=======
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 static struct msm_acpu_clock_platform_data supersonic_clock_data = {
 	.acpu_switch_time_us	= 20,
 	.max_speed_delta_khz	= 256000,
@@ -1410,11 +1376,6 @@ static struct msm_acpu_clock_platform_data supersonic_clock_data = {
 	.power_collapse_khz	= 245000,
 	.wait_for_irq_khz	= 245000,
         .mpll_khz		= 245000,
-<<<<<<< HEAD
-	.max_vdd 		= TPS65023_MAX_DCDC1,
-	.acpu_set_vdd 		= qsd8x50_tps65023_set_dcdc1
-=======
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 };
 
 static unsigned supersonic_perf_acpu_table[] = {

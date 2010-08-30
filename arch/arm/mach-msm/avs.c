@@ -57,29 +57,6 @@ struct clkctl_acpu_speed {
 };
 
 struct clkctl_acpu_speed acpu_max_vdd_tbl[] = {
-<<<<<<< HEAD
-	{  19200, 925 },
-	{ 128000, 925 },
-	{ 245000, 925 },
-	{ 256000, 925 },
-	{ 384000, 950 },
-	{ 422400, 975 },
-	{ 460800, 1000 },
-	{ 499200, 1025 },
-	{ 537600, 1050 },
-	{ 576000, 1050 },
-	{ 614400, 1075 },
-	{ 652800, 1100 },
-	{ 691200, 1125 },
-	{ 729600, 1150 },
-	{ 768000, 1150 },
-	{ 806400, 1175 },
-	{ 844800, 1200 },
-	{ 883200, 1200 },
-	{ 921600, 1225 },
-	{ 960000, 1225 },
-	{ 998400, 1225 },
-=======
 /* Add a 3rd entry into the tables to hardlimit
 a minimum vdd that cannot be exceeded at a given frequency
 to prevent too-aggressive undervolting instability - netarchy */
@@ -111,7 +88,6 @@ to prevent too-aggressive undervolting instability - netarchy */
 	{ 1190400, 1325, 1325 },
 	{ 1228800, 1350, 1350 },
 	{ 1267200, 1350, 1350 },
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 	{ 0 },
 };
 

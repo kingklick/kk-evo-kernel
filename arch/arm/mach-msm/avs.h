@@ -29,13 +29,8 @@
 #ifndef AVS_H
 #define AVS_H
 
-<<<<<<< HEAD
 #define VOLTAGE_MIN  800 /* mV */
-#define VOLTAGE_MAX  1225
-=======
-#define VOLTAGE_MIN  900 /* mV */
 #define VOLTAGE_MAX  1350
->>>>>>> a40f6ba... Change regulator style to that used in Intersectravens havs implementation.
 #define VOLTAGE_STEP 25
 
 int __init avs_init(int (*set_vdd)(int), u32 freq_cnt, u32 freq_idx);
