@@ -257,7 +257,7 @@ uniprocessor machine, and automatically set to a progressively higher value on
 multiprocessor machines. The reasoning behind increasing the value on more CPUs
 is that the effective latency is decreased by virtue of there being more CPUs on
 BFS (for reasons explained above), and increasing the value allows for less
-cache contention and more throughput. Valid values are from 1 to 5000
+cache contention and more throughput. Valid values are from 1 to 1000
 Decreasing the value will decrease latencies at the cost of decreasing
 throughput, while increasing it will improve throughput, but at the cost of
 worsening latencies. The accuracy of the rr interval is limited by HZ resolution
