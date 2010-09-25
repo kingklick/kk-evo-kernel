@@ -118,12 +118,7 @@ that it has an earlier virtual deadline than the currently running task. The
 earlier deadline is the key to which task is next chosen for the first and
 second cases. Once a task is descheduled, it is put back on the queue, and an
 O(n) lookup of all queued-but-not-running tasks is done to determine which has
-the earliest deadline and that task is chosen to receive CPU next. The one
-caveat to this is that if a deadline has already passed (jiffies is greater
-than the deadline), the tasks are chosen in FIFO (first in first out) order as
-the deadlines are old and their absolute value becomes decreasingly relevant
-apart from being a flag that they have been asleep and deserve CPU time ahead
-of all later deadlines.
+the earliest deadline and that task is chosen to receive CPU next.
 
 The CPU proportion of different nice tasks works out to be approximately the
 
@@ -353,4 +348,4 @@ of total wall clock time taken and total work done, rather than the reported
 "cpu usage".
 
 
-Con Kolivas <kernel@kolivas.org> Thu Dec 3 2009
+Con Kolivas <kernel@kolivas.org> Fri Aug 27 2010
