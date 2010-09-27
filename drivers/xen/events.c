@@ -928,6 +928,16 @@ static struct irq_chip xen_dynamic_chip __read_mostly = {
 	.retrigger	= retrigger_dynirq,
 };
 
+static struct irq_chip xen_percpu_chip __read_mostly = {
+	.name		= "xen-percpu",
+
+	.disable	= disable_dynirq,
+	.mask		= disable_dynirq,
+	.unmask		= enable_dynirq,
+
+	.ack		= ack_dynirq,
+};
+
 void __init xen_init_IRQ(void)
 {
 	int i;
