@@ -118,12 +118,7 @@ that it has an earlier virtual deadline than the currently running task. The
 earlier deadline is the key to which task is next chosen for the first and
 second cases. Once a task is descheduled, it is put back on the queue, and an
 O(n) lookup of all queued-but-not-running tasks is done to determine which has
-the earliest deadline and that task is chosen to receive CPU next. The one
-caveat to this is that if a deadline has already passed (jiffies is greater
-than the deadline), the tasks are chosen in FIFO (first in first out) order as
-the deadlines are old and their absolute value becomes decreasingly relevant
-apart from being a flag that they have been asleep and deserve CPU time ahead
-of all later deadlines.
+the earliest deadline and that task is chosen to receive CPU next.
 
 The CPU proportion of different nice tasks works out to be approximately the
 
@@ -262,7 +257,7 @@ uniprocessor machine, and automatically set to a progressively higher value on
 multiprocessor machines. The reasoning behind increasing the value on more CPUs
 is that the effective latency is decreased by virtue of there being more CPUs on
 BFS (for reasons explained above), and increasing the value allows for less
-cache contention and more throughput. Valid values are from 1 to 5000
+cache contention and more throughput. Valid values are from 1 to 1000
 Decreasing the value will decrease latencies at the cost of decreasing
 throughput, while increasing it will improve throughput, but at the cost of
 worsening latencies. The accuracy of the rr interval is limited by HZ resolution
@@ -353,4 +348,4 @@ of total wall clock time taken and total work done, rather than the reported
 "cpu usage".
 
 
-Con Kolivas <kernel@kolivas.org> Thu Dec 3 2009
+Con Kolivas <kernel@kolivas.org> Fri Aug 27 2010

@@ -1274,9 +1274,6 @@ struct task_struct {
 
 	unsigned int policy;
 	cpumask_t cpus_allowed;
-#if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_SCHED_BFS)
-	cpumask_t unplugged_mask;
-#endif
 
 #ifdef CONFIG_TREE_PREEMPT_RCU
 	int rcu_read_lock_nesting;
@@ -1588,7 +1585,7 @@ static inline void tsk_cpus_current(struct task_struct *p)
 
 static inline void print_scheduler_version(void)
 {
-	printk(KERN_INFO"BFS CPU scheduler v0.318 by Con Kolivas.\n");
+	printk(KERN_INFO"BFS CPU scheduler v0.330 by Con Kolivas.\n");
 }
 
 static inline int iso_task(struct task_struct *p)
