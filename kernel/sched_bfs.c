@@ -111,10 +111,12 @@
  * approximate multiples of ten for less overhead.
  */
 #define JIFFIES_TO_NS(TIME)	((TIME) * (1000000000 / HZ))
+#define JIFFY_NS		(1000000000 / HZ)
 #define HALF_JIFFY_NS		(1000000000 / HZ / 2)
 #define HALF_JIFFY_US		(1000000 / HZ / 2)
 #define MS_TO_NS(TIME)		((TIME) << 20)
 #define MS_TO_US(TIME)		((TIME) << 10)
+#define US_TO_NS(TIME)		((TIME) >> 10)
 #define NS_TO_MS(TIME)		((TIME) >> 20)
 #define NS_TO_US(TIME)		((TIME) >> 10)
 
@@ -163,8 +165,8 @@ struct global_rq {
 	cpumask_t cpu_idle_map;
 	int idle_cpus;
 #endif
-	/* Nanosecond jiffies */
-	u64 niffies;
+	u64 niffies; /* Nanosecond jiffies */
+	unsigned long last_jiffy; /* Last jiffy we updated niffies */
 
 	spinlock_t iso_lock;
 	int iso_ticks;
@@ -190,7 +192,7 @@ struct rq {
 	struct mm_struct *prev_mm;
 
 	/* Stored data about rq->curr to work outside grq lock */
-	unsigned long rq_deadline;
+	u64 rq_deadline;
 	unsigned int rq_policy;
 	int rq_time_slice;
 	u64 rq_last_ran;
@@ -302,6 +304,23 @@ static struct root_domain def_root_domain;
 
 static inline void update_rq_clock(struct rq *rq);
 
+/*
+ * Sanity check should sched_clock return bogus values. We make sure it does
+ * not appear to go backwards, and use jiffies to determine the maximum it
+ * could possibly have increased. At least 1us will have always passed so we
+ * use that when we don't trust the difference.
+ */
+static inline void niffy_diff(s64 *niff_diff, int jiff_diff)
+{
+	unsigned long max_diff;
+
+	/*  Round up to the nearest tick for maximum */
+	max_diff = JIFFIES_TO_NS(jiff_diff + 1);
+
+	if (unlikely(*niff_diff < 1 || *niff_diff > max_diff))
+		*niff_diff = US_TO_NS(1);
+}
+
 #ifdef CONFIG_SMP
 #define cpu_rq(cpu)		(&per_cpu(runqueues, (cpu)))
 #define this_rq()		(&__get_cpu_var(runqueues))
@@ -322,18 +341,16 @@ static inline int cpu_of(struct rq *rq)
 static inline void update_clocks(struct rq *rq)
 {
 	s64 ndiff;
+	long jdiff;
 
 	update_rq_clock(rq);
 	ndiff = rq->clock - rq->old_clock;
 	/* old_clock is only updated when we are updating niffies */
 	rq->old_clock = rq->clock;
 	ndiff -= grq.niffies - rq->last_niffy;
-	/*
-	 * Sanity check should sched_clock return bogus values or be limited to
-	 * just jiffy resolution. Some time will always have passed.
-	 */
-	if (unlikely(ndiff < 1 || ndiff > MS_TO_NS(rr_interval)))
-		ndiff = 1;
+	jdiff = jiffies - grq.last_jiffy;
+	niffy_diff(&ndiff, jdiff);
+	grq.last_jiffy += jdiff;
 	grq.niffies += ndiff;
 	rq->last_niffy = grq.niffies;
 }
@@ -351,12 +368,14 @@ static inline int cpu_of(struct rq *rq)
 static inline void update_clocks(struct rq *rq)
 {
 	s64 ndiff;
+	long jdiff;
 
 	update_rq_clock(rq);
 	ndiff = rq->clock - rq->old_clock;
 	rq->old_clock = rq->clock;
-	if (unlikely(ndiff < 1 || ndiff > MS_TO_US(rr_interval)))
-		ndiff = 1;
+	jdiff = jiffies - grq.last_jiffy;
+	niffy_diff(&ndiff, jdiff);
+	grq.last_jiffy += jdiff;
 	grq.niffies += ndiff;
 }
 #endif
@@ -1279,7 +1298,7 @@ EXPORT_SYMBOL(kthread_bind);
  * prio PRIO_LIMIT so it is always preempted.
  */
 static inline int
-can_preempt(struct task_struct *p, int prio, unsigned long deadline,
+can_preempt(struct task_struct *p, int prio, u64 deadline,
 	    unsigned int policy)
 {
 	/* Better static priority RT task or better policy preemption */
@@ -1330,7 +1349,8 @@ static inline int needs_other_cpu(struct task_struct *p, int cpu)
 static void try_preempt(struct task_struct *p, struct rq *this_rq)
 {
 	struct rq *highest_prio_rq = this_rq;
-	unsigned long latest_deadline, cpu;
+	u64 latest_deadline;
+	unsigned long cpu;
 	int highest_prio;
 	cpumask_t tmp;
 
@@ -1352,7 +1372,7 @@ static void try_preempt(struct task_struct *p, struct rq *this_rq)
 	highest_prio = -1;
 
 	for_each_cpu_mask(cpu, tmp) {
-		unsigned long offset_deadline;
+		u64 offset_deadline;
 		struct rq *rq;
 		int rq_prio;
 
@@ -2068,16 +2088,12 @@ static void pc_user_time(struct rq *rq, struct task_struct *p,
 }
 
 /* Convert nanoseconds to percentage of one tick. */
-#define NS_TO_PC(NS)	(NS * 100 / JIFFIES_TO_NS(1))
+#define NS_TO_PC(NS)	(NS * 100 / JIFFY_NS)
 
 /*
  * This is called on clock ticks and on context switches.
  * Bank in p->sched_time the ns elapsed since the last tick or switch.
  * CPU scheduler quota accounting is also performed here in microseconds.
- * The value returned from sched_clock() occasionally gives bogus values so
- * some sanity checking is required. Time is supposed to be banked all the
- * time so default to half a tick to make up for when sched_clock reverts
- * to just returning jiffies, and for hardware that can't do tsc.
  */
 static void
 update_cpu_clock(struct rq *rq, struct task_struct *p, int tick)
@@ -2112,18 +2128,9 @@ update_cpu_clock(struct rq *rq, struct task_struct *p, int tick)
 
 	/* time_slice accounting is done in usecs to avoid overflow on 32bit */
 	if (rq->rq_policy != SCHED_FIFO && p != idle) {
-		long time_diff = rq->clock - rq->rq_last_ran;
+		s64 time_diff = rq->clock - rq->rq_last_ran;
 
-		/*
-		 * There should be less than or equal to one jiffy worth, and not
-		 * negative/overflow. time_diff is only used for internal scheduler
-		 * time_slice accounting.
-		 */
-		if (unlikely(time_diff <= 0))
-			time_diff = JIFFIES_TO_NS(1) / 2;
-		else if (unlikely(time_diff > JIFFIES_TO_NS(1)))
-			time_diff = JIFFIES_TO_NS(1);
-
+		niffy_diff(&time_diff, 1);
 		rq->rq_time_slice -= NS_TO_US(time_diff);
 	}
 	rq->rq_last_ran = rq->timekeep_clock = rq->clock;
@@ -2526,17 +2533,17 @@ EXPORT_SYMBOL(sub_preempt_count);
  * proportion works out to the square of the virtual deadline difference, so
  * this equation will give nice 19 3% CPU compared to nice 0.
  */
-static inline int prio_deadline_diff(int user_prio)
+static inline u64 prio_deadline_diff(int user_prio)
 {
 	return (prio_ratios[user_prio] * rr_interval * (MS_TO_NS(1) / 128));
 }
 
-static inline int task_deadline_diff(struct task_struct *p)
+static inline u64 task_deadline_diff(struct task_struct *p)
 {
 	return prio_deadline_diff(TASK_USER_PRIO(p));
 }
 
-static inline int static_deadline_diff(int static_prio)
+static inline u64 static_deadline_diff(int static_prio)
 {
 	return prio_deadline_diff(USER_PRIO(static_prio));
 }
@@ -2593,7 +2600,7 @@ static inline void check_deadline(struct task_struct *p)
 static inline struct
 task_struct *earliest_deadline_task(struct rq *rq, struct task_struct *idle)
 {
-	unsigned long dl, earliest_deadline = 0; /* Initialise to silence compiler */
+	u64 dl, earliest_deadline = 0; /* Initialise to silence compiler */
 	struct task_struct *p, *edt = idle;
 	unsigned int cpu = cpu_of(rq);
 	struct list_head *queue;
@@ -6518,6 +6525,7 @@ void __init sched_init(void)
 	spin_lock_init(&grq.lock);
 	grq.nr_running = grq.nr_uninterruptible = grq.nr_switches = 0;
 	grq.niffies = 0;
+	grq.last_jiffy = jiffies;
 	spin_lock_init(&grq.iso_lock);
 	grq.iso_ticks = grq.iso_refractory = 0;
 #ifdef CONFIG_SMP
