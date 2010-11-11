@@ -1226,7 +1226,6 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
 		 * group, which consolidates times for all threads in the
 		 * group including the group leader.
 		 */
-		thread_group_times(p, &tgutime, &tgstime);
 		spin_lock_irq(&p->real_parent->sighand->siglock);
 		psig = p->real_parent->signal;
 		sig = p->signal;
